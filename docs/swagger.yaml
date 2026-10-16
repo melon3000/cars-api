@@ -1,187 +1,215 @@
+  openapi: 3.0.3
 
-openapi: 3.0.3
-info:
-  title: Cars API
-  version: 1.0.0
-  description: API for managing cars
+  info:
+    title: Cars API
+    version: 1.0.0
+    description: API for managing cars
+    license:
+      name: MIT
 
-servers:
-  - url: http://localhost:8080
+  servers:
+    - url: http://localhost:8080
 
-tags:
-  - name: cars
-    description: Operations for managing cars
+  tags:
+    - name: cars
+      description: Operations for managing cars
 
-paths:
-  /cars:
-    get:
-      tags:
-        - cars
-      summary: Get all cars
-      description: Returns all cars
-      responses:
-        '200':
-          description: List of cars
+  paths:
+    /cars:
+      get:
+        tags:
+          - cars
+        operationId: getAllCars
+        summary: Get all cars
+        description: Returns all cars
+        responses:
+          '200':
+            description: List of cars
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Car'
+          '400':
+            description: Bad request
+
+      post:
+        tags:
+          - cars
+        operationId: createCar
+        summary: Creates a car
+        description: Creates a new car
+        requestBody:
+          required: true
+          description: A new car to be created
           content:
             application/json:
               schema:
-                type: array
-                items:
+                $ref: '#/components/schemas/NewCar'
+              example:
+                id: 5
+                brand: Volvo
+                model: XC60
+                year: 2024
+        responses:
+          '201':
+            description: Car created successfully
+            headers:
+              Location:
+                description: URL of the newly created car
+                schema:
+                  type: string
+                  example: http://localhost:8080/cars/5
+            content:
+              application/json:
+                schema:
                   $ref: '#/components/schemas/Car'
+          '400':
+            description: One or more parameters are missing or invalid
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+                example:
+                  error: Invalid car parameters
+          '409':
+            description: Car with this ID already exists
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+                example:
+                  error: Car with this ID already exists
 
-    post:
-      tags:
-        - cars
-      summary: Creates a car
-      description: Creates a new car
-      requestBody:
-        required: true
-        description: A new car to be created
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewCar'
-            example:
-              id: 5
-              brand: Volvo
-              model: XC60
-              year: 2024
-      responses:
-        '201':
-          description: Car created successfully
-          headers:
-            Location:
-              description: URL of the newly created car
-              schema:
-                type: string
-                example: http://localhost:8080/cars/5
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Car'
-        '400':
-          description: One or more parameters are missing or invalid
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                error: Invalid car parameters
-        '409':
-          description: Car with this ID already exists
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              example:
-                error: Car with this ID already exists
+    /cars/{id}:
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the car
+          schema:
+            type: integer
+            minimum: 1
+          example: 2
 
-  /cars/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID of the car
-        schema:
-          type: integer
-          minimum: 1
-    get:
-      tags:
-        - cars
-      summary: Get a car by ID
-      description: Returns a car by its ID
-      responses:
-        '200':
-          description: Car found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Car'
-        '400':
-          description: Invalid car ID
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Car not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+      get:
+        tags:
+          - cars
+        operationId: getCarById
+        summary: Get a car by ID
+        description: Returns a car by its ID
+        responses:
+          '200':
+            description: Car found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Car'
+          '400':
+            description: Invalid car ID
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+                example:
+                  error: Invalid car ID
+          '404':
+            description: Car not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+                example:
+                  error: Car not found
 
-    delete:
-      tags:
-        - cars
-      summary: Delete a car
-      description: Deletes a car by its ID
-      responses:
-        '204':
-          description: Car deleted successfully
-        '400':
-          description: Invalid car ID
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '404':
-          description: Car not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+      delete:
+        tags:
+          - cars
+        operationId: deleteCar
+        summary: Delete a car
+        description: Deletes a car by its ID
+        responses:
+          '204':
+            description: Car deleted successfully
+          '400':
+            description: Invalid car ID
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+                example:
+                  error: Invalid car ID
+          '404':
+            description: Car not found
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+                example:
+                  error: Car not found
 
-components:
-  schemas:
-    Car:
-      type: object
-      required:
-        - id
-        - brand
-        - model
-        - year
-      properties:
-        id:
-          type: integer
-          example: 5
-        brand:
-          type: string
-          example: Volvo
-        model:
-          type: string
-          example: XC60
-        year:
-          type: integer
-          example: 2024
+  components:
+    schemas:
+      Car:
+        type: object
+        required:
+          - id
+          - brand
+          - model
+          - year
+        properties:
+          id:
+            type: integer
+            example: 5
+          brand:
+            type: string
+            example: Volvo
+          model:
+            type: string
+            example: XC60
+          year:
+            type: integer
+            example: 2024
 
-    NewCar:
-      type: object
-      required:
-        - id
-        - brand
-        - model
-        - year
-      properties:
-        id:
-          type: integer
-          minimum: 1
-          example: 5
-        brand:
-          type: string
-          example: Volvo
-        model:
-          type: string
-          example: XC60
-        year:
-          type: integer
-          minimum: 1886
-          example: 2024
+      NewCar:
+        type: object
+        required:
+          - id
+          - brand
+          - model
+          - year
+        properties:
+          id:
+            type: integer
+            minimum: 1
+            example: 5
+          brand:
+            type: string
+            example: Volvo
+          model:
+            type: string
+            example: XC60
+          year:
+            type: integer
+            minimum: 1886
+            example: 2024
 
-    Error:
-      type: object
-      required:
-        - error
-      properties:
-        error:
-          type: string
-          example: Car not found
+      DeleteCar:
+        type: object
+        required:
+          - id
+        properties:
+          id:
+            type: integer
+            example: 2
+
+      Error:
+        type: object
+        required:
+          - error
+        properties:
+          error:
+            type: string
+            example: Car not found
+
