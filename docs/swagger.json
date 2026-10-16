@@ -3,8 +3,7 @@
   "info": {
     "title": "Cars API",
     "version": "1.0.0",
-    "description": "Documentation for the Cars API.\n\nError handling:\n400 - Bad input parameters or invalid request.\n401 - Unauthorized access.\n404 - The requested resource was not found.\n500 - An internal server error occurred."
-  },
+    "description": "Returns a list of all cars, including their IDs, brands, models, and years."  },
   "host": "localhost:8080",
   "basePath": "/",
   "schemes": [
