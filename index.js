@@ -1,3 +1,4 @@
+
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./docs/swagger.json');
@@ -33,6 +34,25 @@ app.get('/cars/:id', (req, res) => {
     }
 
     return res.status(200).json(car);
+});
+
+// DELETE /cars/:id — delete a car by ID
+app.delete('/cars/:id', (req, res) => {
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id < 1) {
+        return res.status(400).json({ error: 'Invalid car ID' });
+    }
+
+    const carIndex = cars.findIndex(car => car.id === id);
+
+    if (carIndex === -1) {
+        return res.status(404).json({ error: 'Car not found' });
+    }
+
+    cars.splice(carIndex, 1);
+
+    return res.status(204).send();
 });
 
 // Swagger documentation
