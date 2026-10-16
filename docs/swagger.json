@@ -3,12 +3,76 @@
   "info": {
     "title": "Cars API",
     "version": "1.0.0",
-    "description": "Documentation for the Cars API.\n\nError handling:\n400 - Bad input parameters or invalid request.\n401 - Unauthorized access.\n404 - The requested resource was not found.\n500 - An internal server error occurred.\n\nExample error response:\n{\n  \"error\": \"Cleartext explanation of the error that occurred\"\n}"
+    "description": "Documentation for the Cars API.\n\nError handling:\n400 - Bad input parameters or invalid request.\n401 - Unauthorized access.\n404 - The requested resource was not found.\n500 - An internal server error occurred."
   },
   "host": "localhost:8080",
   "basePath": "/",
   "schemes": [
     "http"
   ],
-  "paths": {}
+  "paths": {
+    "/cars": {
+      "get": {
+        "summary": "Get a list of all cars",
+        "description": "Returns a list of all cars in the API.",
+        "tags": [
+          "cars"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of cars",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "brand": {
+                    "type": "string",
+                    "example": "Toyota"
+                  },
+                  "model": {
+                    "type": "string",
+                    "example": "Corolla"
+                  },
+                  "year": {
+                    "type": "integer",
+                    "example": 2022
+                  }
+                }
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "id": 1,
+                  "brand": "Toyota",
+                  "model": "Corolla",
+                  "year": 2022
+                },
+                {
+                  "id": 2,
+                  "brand": "BMW",
+                  "model": "320d",
+                  "year": 2021
+                },
+                {
+                  "id": 3,
+                  "brand": "Audi",
+                  "model": "A4",
+                  "year": 2023
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
 }
