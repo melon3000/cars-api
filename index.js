@@ -14,9 +14,13 @@ const cars = [
     { id: 3, brand: 'Audi', model: 'A4', year: 2023 }
 ];
 
+function getBaseUrl(req) {
+    return `${req.protocol}://${req.get('host')}`;
+}
+
 // GET /cars — get all cars
 app.get('/cars', (req, res) => {
-    res.status(200).json(cars);
+    return res.status(200).json(cars);
 });
 
 // GET /cars/:id — get a car by ID
@@ -80,7 +84,10 @@ app.post('/cars', (req, res) => {
 
     cars.push(newCar);
 
-    return res.status(201).json(newCar);
+    return res
+        .location(`${getBaseUrl(req)}/cars/${newCar.id}`)
+        .status(201)
+        .json(newCar);
 });
 
 // DELETE /cars/:id — delete a car by ID
