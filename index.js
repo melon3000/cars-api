@@ -36,6 +36,53 @@ app.get('/cars/:id', (req, res) => {
     return res.status(200).json(car);
 });
 
+// POST /cars — add a new car
+app.post('/cars', (req, res) => {
+    const { id, brand, model, year } = req.body;
+
+    if (
+        id === undefined ||
+        typeof brand !== 'string' ||
+        !brand.trim() ||
+        typeof model !== 'string' ||
+        !model.trim() ||
+        year === undefined
+    ) {
+        return res.status(400).json({
+            error: 'id, brand, model and year are required'
+        });
+    }
+
+    if (
+        !Number.isInteger(id) ||
+        id < 1 ||
+        !Number.isInteger(year) ||
+        year < 1886 ||
+        year > new Date().getFullYear()
+    ) {
+        return res.status(400).json({
+            error: 'Invalid car parameters'
+        });
+    }
+
+    if (cars.some(car => car.id === id)) {
+        return res.status(409).json({
+            error: 'Car with this ID already exists'
+        });
+    }
+
+    const newCar = {
+        id,
+        brand: brand.trim(),
+        model: model.trim(),
+        year
+    };
+
+    cars.push(newCar);
+
+    return res.status(201).json(newCar);
+});
+
 // DELETE /cars/:id — delete a car by ID
 app.delete('/cars/:id', (req, res) => {
     const id = Number(req.params.id);
